@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "hooks": {
+    "beforeSubmitPrompt": [
+      {
+        "command": ".cursor/hooks/ai-buddy-start.sh",
+        "matcher": "UserPromptSubmit",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ],
+    "stop": [
+      {
+        "command": ".cursor/hooks/ai-buddy-stop.sh",
+        "timeout": 5,
+        "failClosed": false
+      }
+    ]
+  }
+}
