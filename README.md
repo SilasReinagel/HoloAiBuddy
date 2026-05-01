@@ -1,5 +1,7 @@
 # aibuddy / HoloCube Control
 
+![AI Buddy owl scribe on the HoloCube](desk-sample-pic.jpg)
+
 A small Bun + Elysia API that turns the [GeekMagic HelloCubic-Lite][buy] (a $30
 transparent crystal display cube) into something you can drive over HTTP — push
 JPGs, push GIFs, hide, show, list, delete — without flashing custom firmware.

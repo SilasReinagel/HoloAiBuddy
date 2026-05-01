@@ -78,6 +78,9 @@ async function ensureSpace(bytes: number, filename: string) {
 async function setDisplayed(name: string) {
   await cubeGet(`/set?img=${encodeURIComponent(`/image/${name}`)}`);
   await cubeGet(`/set?theme=2`);
+  // Re-assert full brightness so picking an image is always visible,
+  // even if the Cube was previously hidden, dimmed, or asleep.
+  await cubeGet(`/set?brt=100`);
 }
 
 function safeName(input: string, ext: string) {
