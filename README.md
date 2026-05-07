@@ -1,12 +1,26 @@
-# aibuddy / HoloCube Control
+# HoloAiBuddy
 
-![AI Buddy owl scribe on the HoloCube](desk-sample-pic.jpg)
+> I run a lot of AI agents in parallel and kept losing track of which
+> ones were alive. So I gave them a body.
 
-A small Bun + Elysia API that turns the [GeekMagic HelloCubic-Lite][buy] (a $30
-transparent crystal display cube) into something you can drive over HTTP — push
-JPGs, push GIFs, hide, show, list, delete — without flashing custom firmware.
+When my Cursor agent starts thinking, an owl scribe materializes on a
+$30 transparent crystal cube on my desk. When it stops, the owl
+vanishes. No notifications, no modal interrupts — just ambient
+peripheral signal.
+
+![demo: owl scribe appears when the agent starts](demo.gif)
+
+This repo is a small Bun + Elysia API that turns the
+[GeekMagic HelloCubic-Lite][buy] (a $30 transparent crystal display
+cube) into something you can drive over HTTP — push JPGs, push GIFs,
+hide, show, list, delete — without flashing custom firmware. Plus
+Cursor hook samples that wire the cube to your agent's lifecycle.
 
 [buy]: https://www.aliexpress.com/i/3256805789824743.html?gatewayAdapt=4itemAdapt
+
+**Built for:** people running multi-agent workflows (Cursor, Codex,
+Claude Code, custom agents) who want ambient peripheral signal instead
+of notification spam.
 
 ## What this gets you
 
@@ -21,6 +35,23 @@ The API takes any image (any size, any format sharp can read — JPG, PNG,
 WEBP, HEIC, even animated GIF/WEBP), center-crops it to 240×240, converts it
 to the exact format the cube actually decodes, uploads it, and sets it as the
 displayed image. No flashing required. The cube stays on its stock firmware.
+
+## Cursor hooks: the agent drives its own body
+
+This is the killer feature. The repo includes Cursor hook samples that turn
+the cube into a project-level "AI is working" indicator.
+`.cursor/hooks.json` wires Cursor's `beforeSubmitPrompt` event to
+`.cursor/hooks/ai-buddy-start.sh`, which selects and shows the AI Buddy image
+when Cursor starts working from this project. The `stop` hook runs
+`.cursor/hooks/ai-buddy-stop.sh`, which hides the display when Cursor is done.
+
+Drop the hook files into any project, point `AI_BUDDY_CUBE_API_URL` at your
+running cube-api, set `AI_BUDDY_IMAGE_NAME` to whichever image you uploaded,
+and that project's agent now has a face on your desk.
+
+The same pattern works for any tool that supports lifecycle hooks — Codex
+CLI, Claude Code, custom agent runners — point a `start` script at
+`/select?name=…` and a `stop` script at `/hide`.
 
 ## Hardware
 
@@ -70,19 +101,6 @@ curl -F "file=@sample-buddy-art/owl-anim.gif;filename=ai-buddy-sample.gif" http:
 
 The hooks use `AI_BUDDY_IMAGE_NAME` when selecting an image and default to
 `ai-buddy-sample.gif`.
-
-## Cursor hook sample
-
-This repo includes Cursor hook samples that turn the cube into a project-level
-"AI is working" indicator. `.cursor/hooks.json` wires Cursor's
-`beforeSubmitPrompt` event to `.cursor/hooks/ai-buddy-start.sh`, which selects
-and shows the AI Buddy image when Cursor starts working from this project. The
-`stop` hook runs `.cursor/hooks/ai-buddy-stop.sh`, which hides the display when
-Cursor is done.
-
-Use these files as an example for another project: keep the same hook shape,
-point `AI_BUDDY_CUBE_API_URL` or `CUBE_API_URL` at your running cube-api, and
-set `AI_BUDDY_IMAGE_NAME` if you want a different uploaded image.
 
 ## API reference
 
@@ -155,6 +173,15 @@ Image format requirements:
   (per the stock README's "Transparent GIF Repair" guide), since the display
   has no alpha channel and reads black as transparent anyway
 
+## Where this is going
+
+The single cube is the start. The destination is one cube per agent — a row
+on the desk, each housing a different character: owl scribe for the writer,
+cat sage for the reviewer, robot for the deployer. Glance at the row, see
+who on your team is working right now. PRs that push toward this future are
+welcome — additional hook integrations, new buddy art, multi-cube
+orchestration, presence protocols.
+
 ## Going further
 
 Stock firmware is enough for image/GIF playback. If you ever want a real
@@ -162,3 +189,7 @@ drawing API (text, shapes, pixels), there's an open-source replacement
 firmware: [HoloClawd-Open-Firmware](https://github.com/andrewjiang/HoloClawd-Open-Firmware).
 Flashing requires careful OTA handling — the cube has no USB-serial chip, so a
 botched flash can brick it without an external UART adapter for recovery.
+
+## License
+
+MIT — see [LICENSE](LICENSE).
